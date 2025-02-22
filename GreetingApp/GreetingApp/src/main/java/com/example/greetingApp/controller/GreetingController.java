@@ -1,6 +1,7 @@
 package com.example.greetingApp.controller;
 
 import com.example.greetingApp.service.GreetingService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.greetingApp.model.Greeting;
 import org.springframework.web.bind.annotation.*;
@@ -11,46 +12,36 @@ import java.util.List;
 @RestController
 @RequestMapping("/greeting")
 public class GreetingController {
-
     private final GreetingService greetingService;
 
     public GreetingController(GreetingService greetingService) {
         this.greetingService = greetingService;
     }
 
-    @PostMapping
-    public Greeting saveGreeting(
-            @RequestParam(value = "firstName", required = false) String firstName,
-            @RequestParam(value = "lastName", required = false) String lastName) {
-
-        String message;
-        if (firstName != null && lastName != null) {
-            message = "Hello " + firstName + " " + lastName;
-        } else if (firstName != null) {
-            message = "Hello " + firstName;
-        } else if (lastName != null) {
-            message = "Hello " + lastName;
-        } else {
-            message = "Hello World";
-        }
-
-        return greetingService.saveGreeting(message);
-    }
-
     @GetMapping("/{id}")
-    public Optional<Greeting> getGreetingById(@PathVariable Long id) {
-        return greetingService.findGreetingById(id);
+    public ResponseEntity<Greeting> getGreetingById(@PathVariable Long id) {
+        return ResponseEntity.ok(greetingService.getGreetingById(id));
     }
 
     @GetMapping("/all")
-    public List<Greeting> getAllGreetings() {
-        return greetingService.getAllGreetings();
+    public ResponseEntity<List<Greeting>> getAllGreetings() {
+        return ResponseEntity.ok(greetingService.getAllGreetings());
     }
 
-    // PUT Request to Update Greeting Message
+    @PostMapping
+    public ResponseEntity<Greeting> createGreeting(@RequestBody Greeting greeting) {
+        return ResponseEntity.ok(greetingService.saveGreeting(greeting));
+    }
+
     @PutMapping("/{id}")
-    public Greeting updateGreeting(@PathVariable Long id, @RequestParam String newMessage) {
-        return greetingService.updateGreeting(id, newMessage);
+    public ResponseEntity<Greeting> updateGreeting(@PathVariable Long id, @RequestParam String newMessage) {
+        return ResponseEntity.ok(greetingService.updateGreeting(id, newMessage));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGreeting(@PathVariable Long id) {
+        greetingService.deleteGreeting(id);
+        return ResponseEntity.ok("Greeting with ID " + id + " deleted successfully.");
     }
 }
 
