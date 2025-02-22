@@ -9,15 +9,17 @@ public class GreetingController {
 
     private final GreetingService greetingService;
 
-    // Constructor Injection
     public GreetingController(GreetingService greetingService) {
         this.greetingService = greetingService;
     }
 
-    // GET Request - Using Service Layer
+    // GET Request with Query Parameters
     @GetMapping
-    public String getGreeting() {
-        return "{ \"message\": \"" + greetingService.getGreetingMessage() + "\" }";
+    public String getGreeting(
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName) {
+
+        return "{ \"message\": \"" + greetingService.getGreetingMessage(firstName, lastName) + "\" }";
     }
 }
 
