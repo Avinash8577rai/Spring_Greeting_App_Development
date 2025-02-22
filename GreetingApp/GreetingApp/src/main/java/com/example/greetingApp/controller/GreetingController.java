@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/greeting")
 public class GreetingController {
@@ -43,10 +42,15 @@ public class GreetingController {
         return greetingService.findGreetingById(id);
     }
 
-    // GET Request to Fetch All Greetings
     @GetMapping("/all")
     public List<Greeting> getAllGreetings() {
         return greetingService.getAllGreetings();
+    }
+
+    // PUT Request to Update Greeting Message
+    @PutMapping("/{id}")
+    public Greeting updateGreeting(@PathVariable Long id, @RequestParam String newMessage) {
+        return greetingService.updateGreeting(id, newMessage);
     }
 }
 
